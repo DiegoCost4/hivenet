@@ -2,6 +2,7 @@ package com.hivenet.hivenet.service;
 
 import com.hivenet.hivenet.dto.AuthRequest;
 import com.hivenet.hivenet.dto.AuthResponse;
+import com.hivenet.hivenet.model.RefreshToken;
 import com.hivenet.hivenet.model.User;
 import com.hivenet.hivenet.repository.UserRepository;
 import com.hivenet.hivenet.security.JwtUtil;
@@ -32,6 +33,9 @@ public class AuthService {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
     public AuthResponse register(AuthRequest request) {
         User user = new User();
         user.setEmail(request.getEmail());
@@ -39,7 +43,9 @@ public class AuthService {
         userRepository.save(user);
 
         String token = jwtUtil.generateToken(user.getEmail());
-        return new AuthResponse(token);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+
+        return new AuthResponse(token, refreshToken.getToken());
     }
 
     public AuthResponse login(AuthRequest request) {
@@ -50,7 +56,9 @@ public class AuthService {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
             String token = jwtUtil.generateToken(userDetails.getUsername());
-            return new AuthResponse(token);
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(request.getEmail());
+
+            return new AuthResponse(token, refreshToken.getToken());
         } catch (BadCredentialsException e) {
             throw new RuntimeException("Credenciais inválidas!");
         }
