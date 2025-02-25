@@ -39,13 +39,12 @@ public class AuthService {
     public AuthResponse register(AuthRequest request) {
         User user = new User();
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // 🔹 Criptografa a senha
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole()); // 🔹 Define o tipo de usuário
         userRepository.save(user);
-
+    
         String token = jwtUtil.generateToken(user.getEmail());
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
-
-        return new AuthResponse(token, refreshToken.getToken());
+        return new AuthResponse(token);
     }
 
     public AuthResponse login(AuthRequest request) {

@@ -27,7 +27,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/projects/**").authenticated() // 🔹 Apenas usuários autenticados podem ver projetos
                 .requestMatchers(HttpMethod.POST, "/api/projects/**").authenticated() // 🔹 Apenas usuários autenticados podem criar projetos
                 .requestMatchers(HttpMethod.PUT, "/api/projects/**").authenticated() // 🔹 Permitir atualização autenticada
-                .requestMatchers(HttpMethod.DELETE, "/api/projects/**").authenticated() // 🔹 Permitir deleção autenticada
+                .requestMatchers(HttpMethod.DELETE, "/api/projects/**").authenticated()
+                .requestMatchers("/api/matches/**").authenticated() // 🔹 Permitir deleção autenticada
                 .anyRequest().authenticated() // 🔹 Exige autenticação para todas as outras rotas
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

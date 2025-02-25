@@ -10,4 +10,11 @@ import lombok.Setter;
 public class AuthResponse {
     private String token;
     private String refreshToken;
+
+    // 🔹 Adicionando um construtor que aceita apenas o token
+    public AuthResponse(String token) {
+        this.token = token;
+        this.refreshToken = null; // 🔹 Evita problemas quando o refresh token não for necessário
+    }
 }
+
