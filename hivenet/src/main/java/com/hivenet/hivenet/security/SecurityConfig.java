@@ -2,6 +2,7 @@ package com.hivenet.hivenet.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,6 +24,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll() // 🔹 Libera login e registro
+                .requestMatchers(HttpMethod.GET, "/api/projects/**").authenticated() // 🔹 Apenas usuários autenticados podem ver projetos
+                .requestMatchers(HttpMethod.POST, "/api/projects/**").authenticated() // 🔹 Apenas usuários autenticados podem criar projetos
+                .requestMatchers(HttpMethod.PUT, "/api/projects/**").authenticated() // 🔹 Permitir atualização autenticada
+                .requestMatchers(HttpMethod.DELETE, "/api/projects/**").authenticated() // 🔹 Permitir deleção autenticada
                 .anyRequest().authenticated() // 🔹 Exige autenticação para todas as outras rotas
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
